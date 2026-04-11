@@ -21,24 +21,79 @@ const PORT = 3000
 //Middleware é um software "intermediário" que conecta componentes, aplicativos ou sistemas distribuídos, facilitando a troca de dados e a comunicação
 app.use(express.json())
 
-// 1. ROTA DE ARITMÉTICA
-app.get('/calculos', (_, res) => {
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 1. Aritmetica
 
-    res.json({
-        titulo: "Aritmético",
-        resultados: {
-            soma: AritmeticaAdd(81, 12),
-            subtracao: AritmeticaSub(126, 53),
-            divisao: AritmeticaDiv(120, 20),
-            multiplicacao: AritmeticaMulti(5, 16),
-            potencia: AritmeticaPot(4, 6),
-            raiz: AritmeticaRaiz(144),
-            fracao: AritmeticaFrac(12, 5),
-            porcentagem: AritmeticaVPorc(129, 20),
-            equivalencia: `${AritmeticaEqui(23, 263)}%`
-        }
-    })
-})
+// 1. Soma (/soma/81/12)
+app.get('/soma/:n1/:n2', (req, res) => {
+    const n1 = Number(req.params.n1);
+    const n2 = Number(req.params.n2);
+    res.json({ operacao: 'soma', n1, n2, resultado: AritmeticaAdd(n1, n2) });
+});
+
+// 2. Subtração (/sub/126/53)
+app.get('/sub/:n1/:n2', (req, res) => {
+    const n1 = Number(req.params.n1);
+    const n2 = Number(req.params.n2);
+    res.json({ operacao: 'subtracao', n1, n2, resultado: AritmeticaSub(n1, n2) });
+});
+
+// 3. Divisão (/div/120/20)
+app.get('/div/:n1/:n2', (req, res) => {
+    const n1 = Number(req.params.n1);
+    const n2 = Number(req.params.n2);
+    res.json({ operacao: 'divisao', n1, n2, resultado: AritmeticaDiv(n1, n2) });
+});
+
+// 4. Multiplicação (/multi/5/16)
+app.get('/multi/:n1/:n2', (req, res) => {
+    const n1 = Number(req.params.n1);
+    const n2 = Number(req.params.n2);
+    res.json({ operacao: 'multiplicacao', n1, n2, resultado: AritmeticaMulti(n1, n2) });
+});
+
+// 5. Potência (/pot/4/6)
+app.get('/pot/:base/:exp', (req, res) => {
+    const base = Number(req.params.base);
+    const exp = Number(req.params.exp);
+    res.json({ operacao: 'potencia', base, expoente: exp, resultado: AritmeticaPot(base, exp) });
+});
+
+// 6. Raiz (/raiz/144)
+app.get('/raiz/:n', (req, res) => {
+    const n = Number(req.params.n);
+    res.json({ operacao: 'raiz', valor: n, resultado: AritmeticaRaiz(n) });
+});
+
+// 7. Fração (/fracao/12/5)
+app.get('/fracao/:nume/:deno', (req, res) => {
+    const nume = Number(req.params.nume);
+    const deno = Number(req.params.deno);
+    res.json({ operacao: 'fracao', numerador: nume, denominador: deno, resultado: AritmeticaFrac(nume, deno) });
+});
+
+// 8. Porcentagem (/porcentagem/129/20 -> 20% de 129)
+app.get('/porcentagem/:valor/:porcent', (req, res) => {
+    const v = Number(req.params.valor);
+    const p = Number(req.params.porcent);
+    res.json({ operacao: 'valor_porcentagem', total: v, porcentagem: p, resultado: AritmeticaVPorc(v, p) });
+});
+
+// 9. Equivalência (/equivalencia/23/263)
+app.get('/equivalencia/:parte/:total', (req, res) => {
+    const parte = Number(req.params.parte);
+    const total = Number(req.params.total);
+    // Note que aqui usei o template string para adicionar o símbolo de %
+    res.json({ 
+        operacao: 'equivalencia', 
+        parte, 
+        total, 
+        resultado: `${AritmeticaEqui(parte, total)}%` 
+    });
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // 2. ROTA DE DIA DA SEMANA (Case)
 app.get('/dia/:valor', (req, res) => {
@@ -119,15 +174,25 @@ app.get('/chute/:rand', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`\nSERVIDOR ONLINE: http://localhost:${PORT}`);
-    console.log(`\n--- LINKS PARA TESTAR ---`);
-    console.log(`Soma:      http://localhost:${PORT}/calculos`);
+    console.log(`\n--- LINKS PARA TESTAR (Geral) ---`);
     console.log(`Case:      http://localhost:${PORT}/dia/1`);
-    console.log(`Do Whille  http://localhost:${PORT}/comida?escolha=Pizza`);
-    console.log(`For        http://localhost:${PORT}/tabuada/7`);
-    console.log(`If Else    http://localhost:${PORT}/idade?v=20`);
-    console.log(`String     http://localhost:${PORT}/ola/SeuNome`);
-    console.log(`Vetor      http://localhost:${PORT}/salarios?lista=1200,3500,5000`);
-    console.log(`Whille     http://localhost:${PORT}/chute/5`);
+    console.log(`Do While:  http://localhost:${PORT}/comida?escolha=Pizza`);
+    console.log(`For:       http://localhost:${PORT}/tabuada/7`);
+    console.log(`If Else:   http://localhost:${PORT}/idade?v=20`);
+    console.log(`String:    http://localhost:${PORT}/ola/SeuNome`);
+    console.log(`Vetor:     http://localhost:${PORT}/salarios?lista=1200,3500,5000`);
+    console.log(`While:     http://localhost:${PORT}/chute/5`);
+
+    console.log(`\n--- LINKS PARA TESTAR (Aritmética via Rota) ---`);
+    console.log(`Soma:           http://localhost:${PORT}/soma/81/12`);
+    console.log(`Subtração:      http://localhost:${PORT}/sub/126/53`);
+    console.log(`Divisão:        http://localhost:${PORT}/div/120/20`);
+    console.log(`Multiplicação:  http://localhost:${PORT}/multi/5/16`);
+    console.log(`Potência:       http://localhost:${PORT}/pot/4/6`);
+    console.log(`Raiz:           http://localhost:${PORT}/raiz/144`);
+    console.log(`Fração:         http://localhost:${PORT}/fracao/12/5`);
+    console.log(`Porcentagem:    http://localhost:${PORT}/porcentagem/129/20`);
+    console.log(`Equivalência:   http://localhost:${PORT}/equivalencia/23/263`);
 });
 
 
